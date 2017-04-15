@@ -1,9 +1,63 @@
+function Modebank(config) {
+    for (let modeStr in config) {
+        if (config.hasOwnProperty(modeStr)) {
+            const hasSteps = config[modeStr].hasOwnProperty('steps') && config[modeStr].steps.length
+            this[modeStr] = {
+                name: modeStr
+            }
+            if (modeStr.hasOwnProperty('current') && modeStr.current) {
+                this._currentMode = this[modeStr]
+                if (hasSteps) this._currentStep = 0
+            }
+            if (hasSteps) {
+                this[modeStr]._steps = config[modeStr].steps
+                const self = this
+                config[modeStr].steps.forEach(function (step) {
+                    self[modeStr][step] = step
+                })
+            }
+        }
+    }
+}
+
+Modebank.prototype.whichMode = function () {
+    return this._currentMode.name
+}
+
+Modebank.prototype.whichStep = function () {
+    return this._currentMode._steps[this._currentStep]
+}
+
+Modebank.prototype.nextStep = function () {
+    if (this._currentStep === undefined) return
+    this._currentStep += 1
+    if (this._currentStep >= this._currentMode._steps.length)
+        this._currentStep = 0
+}
+
 document.addEventListener('DOMContentLoaded', function () {
 
     const states = [
         'select-first-point',
         'select-second-point'
     ]
+
+    modebank = new Modebank({
+        ruler: {
+            current: true,
+            steps: [
+                'select-first-point',
+                'select-second-point'
+            ]
+        },
+        compass: {
+            steps: [
+                'select-first-point',
+                'select-second-point'
+            ]
+        }
+    })
+    console.log(modebank)
 
     new Vue({
         el: '#canvas',
