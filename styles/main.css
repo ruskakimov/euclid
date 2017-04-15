@@ -1,0 +1,31 @@
+body {
+    margin: 0;
+}
+
+canvas {
+    cursor: crosshair;
+}
+
+.tools {
+    position: fixed;
+    display: flex;
+}
+
+.tools__ruler,
+.tools__compass {
+    width: 2em;
+    height: 2em;
+    margin: .5em;
+    background: gray;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: -apple-system, system-ui, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    cursor: pointer;
+}
+
+.tools__ruler--active,
+.tools__compass--active {
+    background: red;
+}
