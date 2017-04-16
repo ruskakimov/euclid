@@ -6,10 +6,12 @@
         <link rel="stylesheet" href="styles/main.css">
     </head>
     <body>
-        <div class="tools">
-            <div class="tools__ruler tools__ruler--active">L</div>
-            <div class="tools__compass">C</div>
+        <div id="app" class="wrap">
+            <div class="tools">
+                <div class="tools__btn" :class="{ 'tools__btn--active': (mode === 'ruler') }">L</div>
+                <div class="tools__btn" :class="{ 'tools__btn--active': (mode === 'compass') }">C</div>
+            </div>
+            <canvas id="canvas"></canvas> 
         </div>
-       <canvas id="canvas"></canvas> 
     </body>
 </html>

@@ -43,7 +43,7 @@ Modebank.prototype.mode = function (modeStr) {
 
 document.addEventListener('DOMContentLoaded', function () {
 
-    modebank = new Modebank({
+    const modebank = new Modebank({
         ruler: {
             current: true,
             steps: [
@@ -58,10 +58,9 @@ document.addEventListener('DOMContentLoaded', function () {
             ]
         }
     })
-    console.log(modebank)
 
     new Vue({
-        el: '#canvas',
+        el: '#app',
         data: {
             startingPoint: [],
             endingPoint: [],
@@ -70,10 +69,12 @@ document.addEventListener('DOMContentLoaded', function () {
             mode: modebank.whichMode()
         },
         mounted: function () {
-            this.$el.width = window.innerWidth
-            this.$el.height = window.innerHeight
-            this.$el.addEventListener('mousedown', this.handleMousedown)
-            this.$el.addEventListener('mousemove', this.handleMousemove)
+            const canvas = document.getElementById('canvas')
+            canvas.width = window.innerWidth
+            canvas.height = window.innerHeight
+            canvas.addEventListener('mousedown', this.handleMousedown)
+            canvas.addEventListener('mousemove', this.handleMousemove)
+            this.ctx = canvas.getContext('2d')
         },
         methods: {
             handleMousedown: function (e) {
@@ -114,7 +115,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     case 'select-first-point':
                         break
                     case 'select-second-point':
-                        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
+                        this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height)
                         this.drawLines()
                         this.drawLine(this.startingPoint, [e.offsetX, e.offsetY])
                         break
@@ -154,10 +155,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 })
             },
             drawLine: function (startPoint, endPoint) {
-                ctx.beginPath()
-                ctx.moveTo(startPoint[0], startPoint[1])
-                ctx.lineTo(endPoint[0], endPoint[1])
-                ctx.stroke()
+                this.ctx.beginPath()
+                this.ctx.moveTo(startPoint[0], startPoint[1])
+                this.ctx.lineTo(endPoint[0], endPoint[1])
+                this.ctx.stroke()
             },
             drawCircles: function () {
                 this.circles.forEach(circle => {
@@ -166,9 +167,9 @@ document.addEventListener('DOMContentLoaded', function () {
             },
             drawCircle: function (startPoint, endPoint) {
                 const radius = this.distanceBetween(startPoint, endPoint)
-                ctx.beginPath()
-                ctx.arc(startPoint[0], startPoint[1], radius, 0, 2 * Math.PI)
-                ctx.stroke()
+                this.ctx.beginPath()
+                this.ctx.arc(startPoint[0], startPoint[1], radius, 0, 2 * Math.PI)
+                this.ctx.stroke()
             },
             distanceBetween: function (startPoint, endPoint) {
                 const dx = Math.abs(startPoint[0] - endPoint[0])
@@ -177,6 +178,4 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
     })
-
-    const ctx = document.getElementById('canvas').getContext('2d')
 })
