@@ -116,7 +116,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         break
                     case 'select-second-point':
                         this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height)
-                        this.drawLines()
+                        this.drawHistory()
                         this.drawLine(this.startingPoint, [e.offsetX, e.offsetY])
                         break
                 }
@@ -140,7 +140,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         break
                     case 'select-second-point':
                         this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height)
-                        this.drawCircles()
+                        this.drawHistory()
                         this.drawCircle(this.startingPoint, [e.offsetX, e.offsetY])
                         break
                 }
@@ -148,6 +148,10 @@ document.addEventListener('DOMContentLoaded', function () {
             changeMode: function (modeStr) {
                 modebank.mode(modeStr)
                 this.mode = modeStr
+            },
+            drawHistory: function () {
+                this.drawLines()
+                this.drawCircles()
             },
             drawLines: function () {
                 this.lines.forEach(line => {
