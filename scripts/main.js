@@ -65,7 +65,9 @@ document.addEventListener('DOMContentLoaded', function () {
         data: {
             startingPoint: [],
             endingPoint: [],
-            lines: []
+            lines: [],
+            circles: [],
+            mode: modebank.whichMode()
         },
         mounted: function () {
             this.$el.width = window.innerWidth
@@ -80,6 +82,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         this.handleRulerMousedown(e)
                         break
                     case modebank.compass.name:
+                        this.handleCompassMousedown(e)
                         break
                 }
             },
@@ -89,6 +92,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         this.handleRulerMousemove(e)
                         break
                     case modebank.compass.name:
+                        this.handleCompassMousemove(e)
                         break
                 }
             },
@@ -116,16 +120,60 @@ document.addEventListener('DOMContentLoaded', function () {
                         break
                 }
             },
+            handleCompassMousedown: function (e) {
+                switch (modebank.whichStep()) {
+                    case modebank.compass['select-first-point']:
+                        this.startingPoint = [e.offsetX, e.offsetY]
+                        modebank.nextStep()
+                        break
+                    case modebank.compass['select-second-point']:
+                        this.endingPoint = [e.offsetX, e.offsetY]
+                        this.circles.push([this.startingPoint, this.endingPoint])
+                        modebank.nextStep()
+                        break
+                }
+            },
+            handleCompassMousemove: function (e) {
+                switch (modebank.whichStep()) {
+                    case 'select-first-point':
+                        break
+                    case 'select-second-point':
+                        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
+                        this.drawCircles()
+                        this.drawCircle(this.startingPoint, [e.offsetX, e.offsetY])
+                        break
+                }
+            },
+            changeMode: function (modeStr) {
+                modebank.mode(modeStr)
+                this.mode = modeStr
+            },
             drawLines: function () {
                 this.lines.forEach(line => {
                     this.drawLine(line[0], line[1])
                 })
             },
-            drawLine: function (start, end) {
+            drawLine: function (startPoint, endPoint) {
                 ctx.beginPath()
-                ctx.moveTo(start[0], start[1])
-                ctx.lineTo(end[0], end[1])
+                ctx.moveTo(startPoint[0], startPoint[1])
+                ctx.lineTo(endPoint[0], endPoint[1])
                 ctx.stroke()
+            },
+            drawCircles: function () {
+                this.circles.forEach(circle => {
+                    this.drawCircle(circle[0], circle[1])
+                })
+            },
+            drawCircle: function (startPoint, endPoint) {
+                const radius = this.distanceBetween(startPoint, endPoint)
+                ctx.beginPath()
+                ctx.arc(startPoint[0], startPoint[1], radius, 0, 2 * Math.PI)
+                ctx.stroke()
+            },
+            distanceBetween: function (startPoint, endPoint) {
+                const dx = Math.abs(startPoint[0] - endPoint[0])
+                const dy = Math.abs(startPoint[1] - endPoint[1])
+                return Math.sqrt(dx * dx + dy * dy)
             }
         }
     })
