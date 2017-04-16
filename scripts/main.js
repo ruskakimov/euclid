@@ -171,9 +171,16 @@ document.addEventListener('DOMContentLoaded', function () {
             },
             drawCircle: function (startPoint, endPoint) {
                 const radius = this.distanceBetween(startPoint, endPoint)
+                this.drawDot(startPoint)
                 this.ctx.beginPath()
                 this.ctx.arc(startPoint[0], startPoint[1], radius, 0, 2 * Math.PI)
                 this.ctx.stroke()
+            },
+            drawDot: function (point) {
+                const radius = 2
+                this.ctx.beginPath()
+                this.ctx.arc(point[0], point[1], radius, 0, 2 * Math.PI)
+                this.ctx.fill()
             },
             distanceBetween: function (startPoint, endPoint) {
                 const dx = Math.abs(startPoint[0] - endPoint[0])
