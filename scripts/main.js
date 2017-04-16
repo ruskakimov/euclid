@@ -5,7 +5,7 @@ function Modebank(config) {
             this[modeStr] = {
                 name: modeStr
             }
-            if (modeStr.hasOwnProperty('current') && modeStr.current) {
+            if (config[modeStr].hasOwnProperty('current') && config[modeStr].current) {
                 this._currentMode = this[modeStr]
                 if (hasSteps) this._currentStep = 0
             }
@@ -35,12 +35,13 @@ Modebank.prototype.nextStep = function () {
         this._currentStep = 0
 }
 
-document.addEventListener('DOMContentLoaded', function () {
+Modebank.prototype.mode = function (modeStr) {
+    this._currentMode = this[modeStr]
+    if (this[modeStr].hasOwnProperty('steps'))
+        this._currentStep = 0
+}
 
-    const states = [
-        'select-first-point',
-        'select-second-point'
-    ]
+document.addEventListener('DOMContentLoaded', function () {
 
     modebank = new Modebank({
         ruler: {
@@ -64,8 +65,7 @@ document.addEventListener('DOMContentLoaded', function () {
         data: {
             startingPoint: [],
             endingPoint: [],
-            lines: [],
-            state: 0
+            lines: []
         },
         mounted: function () {
             this.$el.width = window.innerWidth
@@ -75,25 +75,38 @@ document.addEventListener('DOMContentLoaded', function () {
         },
         methods: {
             handleMousedown: function (e) {
-                switch (states[this.state]) {
-                    case 'select-first-point':
-                        this.startingPoint = [e.offsetX, e.offsetY]
-                        this.nextState()
+                switch (modebank.whichMode()) {
+                    case modebank.ruler.name:
+                        this.handleRulerMousedown(e)
                         break
-                    case 'select-second-point':
-                        this.endingPoint = [e.offsetX, e.offsetY]
-                        this.lines.push([this.startingPoint, this.endingPoint])
-                        this.nextState()
+                    case modebank.compass.name:
                         break
                 }
             },
-            nextState: function () {
-                this.state += 1
-                if (this.state >= states.length)
-                    this.state = 0
-            },
             handleMousemove: function (e) {
-                switch (states[this.state]) {
+                switch (modebank.whichMode()) {
+                    case modebank.ruler.name:
+                        this.handleRulerMousemove(e)
+                        break
+                    case modebank.compass.name:
+                        break
+                }
+            },
+            handleRulerMousedown: function (e) {
+                switch (modebank.whichStep()) {
+                    case modebank.ruler['select-first-point']:
+                        this.startingPoint = [e.offsetX, e.offsetY]
+                        modebank.nextStep()
+                        break
+                    case modebank.ruler['select-second-point']:
+                        this.endingPoint = [e.offsetX, e.offsetY]
+                        this.lines.push([this.startingPoint, this.endingPoint])
+                        modebank.nextStep()
+                        break
+                }
+            },
+            handleRulerMousemove: function (e) {
+                switch (modebank.whichStep()) {
                     case 'select-first-point':
                         break
                     case 'select-second-point':
