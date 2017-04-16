@@ -11,8 +11,7 @@ canvas {
     display: flex;
 }
 
-.tools__ruler,
-.tools__compass {
+.tools__btn {
     width: 2em;
     height: 2em;
     margin: .5em;
@@ -25,7 +24,6 @@ canvas {
     cursor: pointer;
 }
 
-.tools__ruler--active,
-.tools__compass--active {
+.tools__btn--active {
     background: red;
 }
