@@ -139,7 +139,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     case 'select-first-point':
                         break
                     case 'select-second-point':
-                        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
+                        this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height)
                         this.drawCircles()
                         this.drawCircle(this.startingPoint, [e.offsetX, e.offsetY])
                         break
