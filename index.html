@@ -8,8 +8,16 @@
     <body>
         <div id="app" class="wrap">
             <div class="tools">
-                <div class="tools__btn" :class="{ 'tools__btn--active': (mode === 'ruler') }">L</div>
-                <div class="tools__btn" :class="{ 'tools__btn--active': (mode === 'compass') }">C</div>
+                <div
+                    class="tools__btn"
+                    :class="{ 'tools__btn--active': (mode === 'ruler') }"
+                    @click="changeMode('ruler')"
+                >L</div>
+                <div
+                    class="tools__btn"
+                    :class="{ 'tools__btn--active': (mode === 'compass') }"
+                    @click="changeMode('compass')"
+                >C</div>
             </div>
             <canvas id="canvas"></canvas> 
         </div>
