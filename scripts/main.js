@@ -36,7 +36,8 @@ document.addEventListener('DOMContentLoaded', function () {
             startingPoint: [],
             history: [],
             mode: modebank.current(),
-            mouseButtonsDown: 0
+            mouseButtonsDown: 0,
+            displayHistoryTill: 0
         },
         mounted: function () {
             const canvas = document.getElementById('canvas')
@@ -46,9 +47,23 @@ document.addEventListener('DOMContentLoaded', function () {
             canvas.addEventListener('mousemove', this.handleMousemove)
             canvas.addEventListener('mouseup', this.handleMouseup)
             canvas.addEventListener('mouseout', this.handleMouseout)
+            document.addEventListener('keydown', this.handleKeydown)
             this.ctx = canvas.getContext('2d')
         },
         methods: {
+            // app event handlers
+            handleKeydown: function (e) {
+                if (e.ctrlKey) {
+                    switch (e.keyCode) {
+                        case 89:
+                            this.redo()
+                            break
+                        case 90:
+                            this.undo()
+                            break
+                    }
+                }
+            },
             handleMousedown: function (e) {
                 this.mouseButtonsDown++
                 switch (this.mode) {
@@ -102,7 +117,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             },
             handleRulerMouseup: function (e) {
-                this.history.push(new Line(
+                this.addToHistory(new Line(
                     this.startingPoint[0],
                     this.startingPoint[1],
                     e.offsetX,
@@ -137,26 +152,49 @@ document.addEventListener('DOMContentLoaded', function () {
                     e.offsetX,
                     e.offsetY
                 )
-                this.history.push(new Circle(
+                this.addToHistory(new Circle(
                     this.startingPoint[0],
                     this.startingPoint[1],
                     radius
                 ))
             },
 
+            // app operations
+            undo: function () {
+                this.displayHistoryTill = Math.max(
+                    0,
+                    this.displayHistoryTill - 1
+                )
+                this.drawHistory()
+            },
+            redo: function () {
+                this.displayHistoryTill = Math.min(
+                    this.history.length,
+                    this.displayHistoryTill + 1
+                )
+                this.drawHistory()
+            },
             changeMode: function (modeStr) {
                 modebank.changeMode(modeStr)
                 this.mode = modeStr
             },
+            addToHistory: function (obj) {
+                this.history = this.history.slice(0, this.displayHistoryTill)
+                this.history.push(obj)
+                this.displayHistoryTill = this.history.length
+            },
             drawHistory: function () {
                 this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height)
-                this.history.forEach(obj => {
+                for (var i = 0; i < this.displayHistoryTill; i++) {
+                    const obj = this.history[i]
                     if (obj instanceof Line)
                         this.drawLine(obj.x0, obj.y0, obj.x1, obj.y1)
                     else if (obj instanceof Circle)
                         this.drawCircle(obj.x0, obj.y0, obj.radius)
-                })
+                }
             },
+
+            // helping functions
             drawLine: function (x0, y0, x1, y1) {
                 this.ctx.beginPath()
                 this.ctx.moveTo(x0, y0)
