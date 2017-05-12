@@ -34,7 +34,6 @@ document.addEventListener('DOMContentLoaded', function () {
         el: '#app',
         data: {
             startingPoint: [],
-            endingPoint: [],
             history: [],
             mode: modebank.current(),
             mouseButtonsDown: 0
@@ -93,7 +92,6 @@ document.addEventListener('DOMContentLoaded', function () {
             },
             handleRulerMousemove: function (e) {
                 if (this.mouseButtonsDown) {
-                    this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height)
                     this.drawHistory()
                     this.drawLine(
                         this.startingPoint[0],
@@ -118,7 +116,6 @@ document.addEventListener('DOMContentLoaded', function () {
             },
             handleCompassMousemove: function (e) {
                 if (this.mouseButtonsDown) {
-                    this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height)
                     this.drawHistory()
                     const radius = this.distanceBetween(
                         this.startingPoint[0],
@@ -152,6 +149,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 this.mode = modeStr
             },
             drawHistory: function () {
+                this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height)
                 this.history.forEach(obj => {
                     if (obj instanceof Line)
                         this.drawLine(obj.x0, obj.y0, obj.x1, obj.y1)
