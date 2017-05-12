@@ -13,6 +13,18 @@ function createModebank(modes) {
     return modebank
 }
 
+function Line(x0, y0, x1, y1) {
+    this.x0 = x0
+    this.y0 = y0
+    this.x1 = x1
+    this.y1 = y1
+}
+
+function Circle(x0, y0, radius) {
+    this.x0 = x0
+    this.y0 = y0
+    this.radius = radius
+}
 
 document.addEventListener('DOMContentLoaded', function () {
 
@@ -23,8 +35,7 @@ document.addEventListener('DOMContentLoaded', function () {
         data: {
             startingPoint: [],
             endingPoint: [],
-            lines: [],
-            circles: [],
+            history: [],
             mode: modebank.current(),
             mouseButtonsDown: 0
         },
@@ -35,6 +46,7 @@ document.addEventListener('DOMContentLoaded', function () {
             canvas.addEventListener('mousedown', this.handleMousedown)
             canvas.addEventListener('mousemove', this.handleMousemove)
             canvas.addEventListener('mouseup', this.handleMouseup)
+            canvas.addEventListener('mouseout', this.handleMouseout)
             this.ctx = canvas.getContext('2d')
         },
         methods: {
@@ -60,6 +72,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             },
             handleMouseup: function (e) {
+                if (this.mouseButtonsDown === 0) return
                 this.mouseButtonsDown--
                 switch (this.mode) {
                     case modebank.ruler:
@@ -70,6 +83,9 @@ document.addEventListener('DOMContentLoaded', function () {
                         break
                 }
             },
+            handleMouseout: function (e) {
+                this.mouseButtonsDown = 0
+            },
 
             // ruler event handlers
             handleRulerMousedown: function (e) {
@@ -79,12 +95,21 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (this.mouseButtonsDown) {
                     this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height)
                     this.drawHistory()
-                    this.drawLine(this.startingPoint, [e.offsetX, e.offsetY])
+                    this.drawLine(
+                        this.startingPoint[0],
+                        this.startingPoint[1],
+                        e.offsetX,
+                        e.offsetY
+                    )
                 }
             },
             handleRulerMouseup: function (e) {
-                this.endingPoint = [e.offsetX, e.offsetY]
-                this.lines.push([this.startingPoint, this.endingPoint])
+                this.history.push(new Line(
+                    this.startingPoint[0],
+                    this.startingPoint[1],
+                    e.offsetX,
+                    e.offsetY
+                ))
             },
 
             // compass event handlers
@@ -95,12 +120,31 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (this.mouseButtonsDown) {
                     this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height)
                     this.drawHistory()
-                    this.drawCircle(this.startingPoint, [e.offsetX, e.offsetY])
+                    const radius = this.distanceBetween(
+                        this.startingPoint[0],
+                        this.startingPoint[1],
+                        e.offsetX,
+                        e.offsetY
+                    )
+                    this.drawCircle(
+                        this.startingPoint[0],
+                        this.startingPoint[1],
+                        radius
+                    )
                 }
             },
             handleCompassMouseup: function (e) {
-                this.endingPoint = [e.offsetX, e.offsetY]
-                this.circles.push([this.startingPoint, this.endingPoint])
+                const radius = this.distanceBetween(
+                    this.startingPoint[0],
+                    this.startingPoint[1],
+                    e.offsetX,
+                    e.offsetY
+                )
+                this.history.push(new Circle(
+                    this.startingPoint[0],
+                    this.startingPoint[1],
+                    radius
+                ))
             },
 
             changeMode: function (modeStr) {
@@ -108,41 +152,34 @@ document.addEventListener('DOMContentLoaded', function () {
                 this.mode = modeStr
             },
             drawHistory: function () {
-                this.drawLines()
-                this.drawCircles()
-            },
-            drawLines: function () {
-                this.lines.forEach(line => {
-                    this.drawLine(line[0], line[1])
+                this.history.forEach(obj => {
+                    if (obj instanceof Line)
+                        this.drawLine(obj.x0, obj.y0, obj.x1, obj.y1)
+                    else if (obj instanceof Circle)
+                        this.drawCircle(obj.x0, obj.y0, obj.radius)
                 })
             },
-            drawLine: function (startPoint, endPoint) {
+            drawLine: function (x0, y0, x1, y1) {
                 this.ctx.beginPath()
-                this.ctx.moveTo(startPoint[0], startPoint[1])
-                this.ctx.lineTo(endPoint[0], endPoint[1])
+                this.ctx.moveTo(x0, y0)
+                this.ctx.lineTo(x1, y1)
                 this.ctx.stroke()
             },
-            drawCircles: function () {
-                this.circles.forEach(circle => {
-                    this.drawCircle(circle[0], circle[1])
-                })
-            },
-            drawCircle: function (startPoint, endPoint) {
-                const radius = this.distanceBetween(startPoint, endPoint)
-                this.drawDot(startPoint)
+            drawCircle: function (x0, y0, radius) {
+                this.drawDot(x0, y0)
                 this.ctx.beginPath()
-                this.ctx.arc(startPoint[0], startPoint[1], radius, 0, 2 * Math.PI)
+                this.ctx.arc(x0, y0, radius, 0, 2 * Math.PI)
                 this.ctx.stroke()
             },
-            drawDot: function (point) {
+            drawDot: function (x0, y0) {
                 const radius = 2
                 this.ctx.beginPath()
-                this.ctx.arc(point[0], point[1], radius, 0, 2 * Math.PI)
+                this.ctx.arc(x0, y0, radius, 0, 2 * Math.PI)
                 this.ctx.fill()
             },
-            distanceBetween: function (startPoint, endPoint) {
-                const dx = Math.abs(startPoint[0] - endPoint[0])
-                const dy = Math.abs(startPoint[1] - endPoint[1])
+            distanceBetween: function (x0, y0, x1, y1) {
+                const dx = Math.abs(x0 - x1)
+                const dy = Math.abs(y0 - y1)
                 return Math.sqrt(dx * dx + dy * dy)
             }
         }
