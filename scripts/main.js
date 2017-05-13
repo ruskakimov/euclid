@@ -61,10 +61,15 @@ document.addEventListener('DOMContentLoaded', function () {
         methods: {
             // app event handlers
             handleWheel: function (e) {
-                this.zoom += e.deltaY / 1000
-                this.zoom = Math.max(ZOOM_LIMIT_MIN, this.zoom)
-                this.zoom = Math.min(ZOOM_LIMIT_MAX, this.zoom)
-                console.log(this.zoom)
+                const deltaZoom = e.deltaY / 2000
+                var z0 = this.zoom,
+                    z1 = this.zoom + deltaZoom
+                z1 = Math.max(ZOOM_LIMIT_MIN, z1)
+                z1 = Math.min(ZOOM_LIMIT_MAX, z1)
+                const offX = e.offsetX / z0 * (z0 / z1 - 1),
+                      offY = e.offsetY / z0 * (z0 / z1 - 1)
+                this.translateHistory(offX, offY)
+                this.zoom = z1
                 this.drawHistory()
             },
             handleKeydown: function (e) {
