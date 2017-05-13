@@ -189,8 +189,8 @@ document.addEventListener('DOMContentLoaded', function () {
             },
             handleHandMousemove: function (e) {
                 if (this.mouseButtonsDown) {
-                    this.handOffset[0] = (e.offsetX - this.startingPoint[0])
-                    this.handOffset[1] = (e.offsetY - this.startingPoint[1])
+                    this.handOffset[0] = (e.offsetX - this.startingPoint[0]) / this.zoom
+                    this.handOffset[1] = (e.offsetY - this.startingPoint[1]) / this.zoom
                     this.drawHistoryWithOffset()
                 }
             },
@@ -231,33 +231,37 @@ document.addEventListener('DOMContentLoaded', function () {
                 for (var i = 0; i < this.displayHistoryTill; i++) {
                     const obj = this.history[i]
                     if (obj instanceof Line)
-                        this.drawLine(obj.x0, obj.y0, obj.x1, obj.y1)
+                        this.drawScaledLine(obj.x0, obj.y0, obj.x1, obj.y1, this.zoom)
                     else if (obj instanceof Circle)
-                        this.drawCircle(obj.x0, obj.y0, obj.radius)
+                        this.drawScaledCircle(obj.x0, obj.y0, obj.radius, this.zoom)
                 }
             },
             drawHistoryWithOffset: function () {
+                // does not change history
                 this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height)
                 const offX = this.handOffset[0],
                       offY = this.handOffset[1]
                 for (var i = 0; i < this.displayHistoryTill; i++) {
                     const obj = this.history[i]
                     if (obj instanceof Line)
-                        this.drawLine(
+                        this.drawScaledLine(
                             obj.x0 + offX,
                             obj.y0 + offY,
                             obj.x1 + offX,
-                            obj.y1 + offY
+                            obj.y1 + offY,
+                            this.zoom
                         )
                     else if (obj instanceof Circle)
-                        this.drawCircle(
+                        this.drawScaledCircle(
                             obj.x0 + offX,
                             obj.y0 + offY,
-                            obj.radius
+                            obj.radius,
+                            this.zoom
                         )
                 }
             },
             translateHistory: function (offX, offY) {
+                // move all history with offset
                 this.history = this.history.map(obj => {
                     if (obj instanceof Line) {
                         this.moveLine(obj, offX, offY)
@@ -276,6 +280,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 line.y0 += offY
                 line.y1 += offY
             },
+            drawScaledLine: function (x0, y0, x1, y1, zoom) {
+                this.drawLine(
+                    x0 * zoom,
+                    y0 * zoom,
+                    x1 * zoom,
+                    y1 * zoom)
+            },
             drawLine: function (x0, y0, x1, y1) {
                 this.ctx.beginPath()
                 this.ctx.moveTo(x0, y0)
@@ -285,6 +296,13 @@ document.addEventListener('DOMContentLoaded', function () {
             moveCircle: function (circle, offX, offY) {
                 circle.x0 += offX
                 circle.y0 += offY
+            },
+            drawScaledCircle: function (x0, y0, radius, zoom) {
+                this.drawCircle(
+                    x0 * zoom,
+                    y0 * zoom,
+                    radius * zoom
+                )
             },
             drawCircle: function (x0, y0, radius) {
                 this.drawDot(x0, y0)
