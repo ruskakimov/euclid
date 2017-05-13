@@ -61,7 +61,8 @@ document.addEventListener('DOMContentLoaded', function () {
         methods: {
             // app event handlers
             handleWheel: function (e) {
-                const deltaZoom = e.deltaY / 2000
+                e.preventDefault()
+                const deltaZoom = e.deltaY / 1000
                 var z0 = this.zoom,
                     z1 = this.zoom + deltaZoom
                 z1 = Math.max(ZOOM_LIMIT_MIN, z1)
