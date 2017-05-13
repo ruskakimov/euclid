@@ -1,11 +1,8 @@
 function createModebank(modes) {
     var modebank = {}
     var current = modes[0]
-
     modes.forEach(mode => modebank[mode] = mode)
-
     modebank.current = () => current
-
     modebank.changeMode = (newMode) => {
         if (modebank[newMode]) {
             current = newMode
