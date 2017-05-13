@@ -7,8 +7,11 @@ function createModebank(modes) {
     modebank.current = () => current
 
     modebank.changeMode = (newMode) => {
-        if (modes[newMode])
+        if (modebank[newMode]) {
             current = newMode
+            return true
+        }
+        return false
     }
     return modebank
 }
@@ -28,7 +31,7 @@ function Circle(x0, y0, radius) {
 
 document.addEventListener('DOMContentLoaded', function () {
 
-    const modebank = createModebank(['ruler', 'compass'])
+    const modebank = createModebank(['ruler', 'compass', 'hand'])
 
     new Vue({
         el: '#app',
@@ -37,7 +40,8 @@ document.addEventListener('DOMContentLoaded', function () {
             history: [],
             mode: modebank.current(),
             mouseButtonsDown: 0,
-            displayHistoryTill: 0
+            displayHistoryTill: 0,
+            handOffset: [0, 0]
         },
         mounted: function () {
             const canvas = document.getElementById('canvas')
@@ -73,6 +77,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     case modebank.compass:
                         this.handleCompassMousedown(e)
                         break
+                    case modebank.hand:
+                        this.handleHandMousedown(e)
+                        break
                 }
             },
             handleMousemove: function (e) {
@@ -82,6 +89,9 @@ document.addEventListener('DOMContentLoaded', function () {
                         break
                     case modebank.compass:
                         this.handleCompassMousemove(e)
+                        break
+                    case modebank.hand:
+                        this.handleHandMousemove(e)
                         break
                 }
             },
@@ -94,6 +104,9 @@ document.addEventListener('DOMContentLoaded', function () {
                         break
                     case modebank.compass:
                         this.handleCompassMouseup(e)
+                        break
+                    case modebank.hand:
+                        this.handleHandMouseup(e)
                         break
                 }
             },
@@ -159,6 +172,37 @@ document.addEventListener('DOMContentLoaded', function () {
                 ))
             },
 
+            // hand event handlers
+            handleHandMousedown: function (e) {
+                this.startingPoint = [e.offsetX, e.offsetY]
+            },
+            handleHandMousemove: function (e) {
+                if (this.mouseButtonsDown) {
+                    this.handOffset[0] = (e.offsetX - this.startingPoint[0])
+                    this.handOffset[1] = (e.offsetY - this.startingPoint[1])
+                    this.drawHistoryWithOffset()
+                }
+            },
+            handleHandMouseup: function (e) {
+                // update lines with offset
+                const offX = this.handOffset[0],
+                      offY = this.handOffset[1]
+                this.history = this.history.map(obj => {
+                    if (obj instanceof Line) {
+                        obj.x0 += offX
+                        obj.x1 += offX
+                        obj.y0 += offY
+                        obj.y1 += offY
+                    }
+                    else if (obj instanceof Circle) {
+                        obj.x0 += offX
+                        obj.y0 += offY
+                    }
+                    return obj
+                })
+                this.handOffset = [0, 0]
+            },
+
             // app operations
             undo: function () {
                 this.displayHistoryTill = Math.max(
@@ -191,6 +235,27 @@ document.addEventListener('DOMContentLoaded', function () {
                         this.drawLine(obj.x0, obj.y0, obj.x1, obj.y1)
                     else if (obj instanceof Circle)
                         this.drawCircle(obj.x0, obj.y0, obj.radius)
+                }
+            },
+            drawHistoryWithOffset: function () {
+                this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height)
+                const offX = this.handOffset[0],
+                      offY = this.handOffset[1]
+                for (var i = 0; i < this.displayHistoryTill; i++) {
+                    const obj = this.history[i]
+                    if (obj instanceof Line)
+                        this.drawLine(
+                            obj.x0 + offX,
+                            obj.y0 + offY,
+                            obj.x1 + offX,
+                            obj.y1 + offY
+                        )
+                    else if (obj instanceof Circle)
+                        this.drawCircle(
+                            obj.x0 + offX,
+                            obj.y0 + offY,
+                            obj.radius
+                        )
                 }
             },
 
