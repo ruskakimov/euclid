@@ -1,4 +1,5 @@
 # Euclid
+## [DEMO](http://euclid.surge.sh/)
  Web app for building geometric constructions with only straight edge and compass.
 
  > Compass-and-straightedge construction, also known as ruler-and-compass construction or classical construction, is the construction of lengths, angles, and other geometric figures using only an idealized ruler and compass. [Wikipedia](https://en.wikipedia.org/wiki/Compass-and-straightedge_construction)
