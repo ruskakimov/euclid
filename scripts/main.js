@@ -142,10 +142,10 @@ document.addEventListener('DOMContentLoaded', function () {
             },
             handleRulerMouseup: function (e) {
                 this.addToHistory(new Line(
-                    this.startingPoint[0],
-                    this.startingPoint[1],
-                    e.offsetX,
-                    e.offsetY
+                    this.startingPoint[0] / this.zoom,
+                    this.startingPoint[1] / this.zoom,
+                    e.offsetX / this.zoom,
+                    e.offsetY / this.zoom
                 ))
             },
 
@@ -177,9 +177,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     e.offsetY
                 )
                 this.addToHistory(new Circle(
-                    this.startingPoint[0],
-                    this.startingPoint[1],
-                    radius
+                    this.startingPoint[0] / this.zoom,
+                    this.startingPoint[1] / this.zoom,
+                    radius / this.zoom
                 ))
             },
 
@@ -280,12 +280,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 line.y0 += offY
                 line.y1 += offY
             },
-            drawScaledLine: function (x0, y0, x1, y1, zoom) {
+            drawScaledLine: function (x0, y0, x1, y1) {
                 this.drawLine(
-                    x0 * zoom,
-                    y0 * zoom,
-                    x1 * zoom,
-                    y1 * zoom)
+                    x0 * this.zoom,
+                    y0 * this.zoom,
+                    x1 * this.zoom,
+                    y1 * this.zoom
+                )
             },
             drawLine: function (x0, y0, x1, y1) {
                 this.ctx.beginPath()
@@ -297,11 +298,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 circle.x0 += offX
                 circle.y0 += offY
             },
-            drawScaledCircle: function (x0, y0, radius, zoom) {
+            drawScaledCircle: function (x0, y0, radius) {
                 this.drawCircle(
-                    x0 * zoom,
-                    y0 * zoom,
-                    radius * zoom
+                    x0 * this.zoom,
+                    y0 * this.zoom,
+                    radius * this.zoom
                 )
             },
             drawCircle: function (x0, y0, radius) {
