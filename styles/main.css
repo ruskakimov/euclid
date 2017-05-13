@@ -7,8 +7,16 @@ body {
     height: 100%;
 }
 
-canvas {
+canvas.ruler,
+canvas.compass {
     cursor: crosshair;
+}
+
+canvas.hand {
+    cursor: -webkit-grab;
+}
+canvas.hand:active {
+    cursor: -webkit-grabbing;
 }
 
 .tools {

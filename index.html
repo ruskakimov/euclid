@@ -18,8 +18,13 @@
                     :class="{ 'tools__btn--active': (mode === 'compass') }"
                     @click="changeMode('compass')"
                 >C</div>
+                <div
+                    class="tools__btn"
+                    :class="{ 'tools__btn--active': (mode === 'hand') }"
+                    @click="changeMode('hand')"
+                >H</div>
             </div>
-            <canvas id="canvas"></canvas> 
+            <canvas id="canvas" :class="mode"></canvas> 
         </div>
     </body>
 </html>
