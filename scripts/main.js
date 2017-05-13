@@ -31,6 +31,8 @@ function Circle(x0, y0, radius) {
 
 document.addEventListener('DOMContentLoaded', function () {
 
+    const ZOOM_LIMIT_MIN = 0.1
+    const ZOOM_LIMIT_MAX = 10
     const modebank = createModebank(['ruler', 'compass', 'hand'])
 
     new Vue({
@@ -60,9 +62,10 @@ document.addEventListener('DOMContentLoaded', function () {
             // app event handlers
             handleWheel: function (e) {
                 this.zoom += e.deltaY / 1000
+                this.zoom = Math.max(ZOOM_LIMIT_MIN, this.zoom)
+                this.zoom = Math.min(ZOOM_LIMIT_MAX, this.zoom)
                 console.log(this.zoom)
                 this.drawHistory()
-                this.ctx.restore()
             },
             handleKeydown: function (e) {
                 if (e.ctrlKey) {
@@ -195,19 +198,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 // update lines with offset
                 const offX = this.handOffset[0],
                       offY = this.handOffset[1]
-                this.history = this.history.map(obj => {
-                    if (obj instanceof Line) {
-                        obj.x0 += offX
-                        obj.x1 += offX
-                        obj.y0 += offY
-                        obj.y1 += offY
-                    }
-                    else if (obj instanceof Circle) {
-                        obj.x0 += offX
-                        obj.y0 += offY
-                    }
-                    return obj
-                })
+                this.translateHistory(offX, offY)
                 this.handOffset = [0, 0]
             },
 
@@ -236,8 +227,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 this.displayHistoryTill = this.history.length
             },
             drawHistory: function () {
-                this.ctx.save()
-                this.ctx.scale(this.zoom, this.zoom)
                 this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height)
                 for (var i = 0; i < this.displayHistoryTill; i++) {
                     const obj = this.history[i]
@@ -246,11 +235,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     else if (obj instanceof Circle)
                         this.drawCircle(obj.x0, obj.y0, obj.radius)
                 }
-                this.ctx.restore()
             },
             drawHistoryWithOffset: function () {
-                this.ctx.save()
-                this.ctx.scale(this.zoom, this.zoom)
                 this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height)
                 const offX = this.handOffset[0],
                       offY = this.handOffset[1]
@@ -270,15 +256,35 @@ document.addEventListener('DOMContentLoaded', function () {
                             obj.radius
                         )
                 }
-                this.ctx.restore()
+            },
+            translateHistory: function (offX, offY) {
+                this.history = this.history.map(obj => {
+                    if (obj instanceof Line) {
+                        this.moveLine(obj, offX, offY)
+                    }
+                    else if (obj instanceof Circle) {
+                        this.moveCircle(obj, offX, offY)
+                    }
+                    return obj
+                })
             },
 
             // helping functions
+            moveLine: function (line, offX, offY) {
+                line.x0 += offX
+                line.x1 += offX
+                line.y0 += offY
+                line.y1 += offY
+            },
             drawLine: function (x0, y0, x1, y1) {
                 this.ctx.beginPath()
                 this.ctx.moveTo(x0, y0)
                 this.ctx.lineTo(x1, y1)
                 this.ctx.stroke()
+            },
+            moveCircle: function (circle, offX, offY) {
+                circle.x0 += offX
+                circle.y0 += offY
             },
             drawCircle: function (x0, y0, radius) {
                 this.drawDot(x0, y0)
