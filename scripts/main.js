@@ -41,7 +41,8 @@ document.addEventListener('DOMContentLoaded', function () {
             mode: modebank.current(),
             mouseButtonsDown: 0,
             displayHistoryTill: 0,
-            handOffset: [0, 0]
+            handOffset: [0, 0],
+            zoom: 1
         },
         mounted: function () {
             const canvas = document.getElementById('canvas')
@@ -51,11 +52,18 @@ document.addEventListener('DOMContentLoaded', function () {
             canvas.addEventListener('mousemove', this.handleMousemove)
             canvas.addEventListener('mouseup', this.handleMouseup)
             canvas.addEventListener('mouseout', this.handleMouseout)
+            canvas.addEventListener('wheel', this.handleWheel)
             document.addEventListener('keydown', this.handleKeydown)
             this.ctx = canvas.getContext('2d')
         },
         methods: {
             // app event handlers
+            handleWheel: function (e) {
+                this.zoom += e.deltaY / 1000
+                console.log(this.zoom)
+                this.drawHistory()
+                this.ctx.restore()
+            },
             handleKeydown: function (e) {
                 if (e.ctrlKey) {
                     switch (e.keyCode) {
@@ -228,6 +236,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 this.displayHistoryTill = this.history.length
             },
             drawHistory: function () {
+                this.ctx.save()
+                this.ctx.scale(this.zoom, this.zoom)
                 this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height)
                 for (var i = 0; i < this.displayHistoryTill; i++) {
                     const obj = this.history[i]
@@ -236,8 +246,11 @@ document.addEventListener('DOMContentLoaded', function () {
                     else if (obj instanceof Circle)
                         this.drawCircle(obj.x0, obj.y0, obj.radius)
                 }
+                this.ctx.restore()
             },
             drawHistoryWithOffset: function () {
+                this.ctx.save()
+                this.ctx.scale(this.zoom, this.zoom)
                 this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height)
                 const offX = this.handOffset[0],
                       offY = this.handOffset[1]
@@ -257,6 +270,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             obj.radius
                         )
                 }
+                this.ctx.restore()
             },
 
             // helping functions
