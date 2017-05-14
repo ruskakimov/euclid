@@ -29,7 +29,7 @@
                     class="zoom_reset"
                     @click="resetZoom"
                 >Original scale</button>
-                <div class="zoom__val">{{zoom}}</div>
+                <div class="zoom__val">{{ zoom | roundTo2DecPlaces }}</div>
             </div>
             <canvas id="canvas" :class="mode"></canvas> 
         </div>

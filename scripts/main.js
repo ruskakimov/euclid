@@ -330,6 +330,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 const dy = Math.abs(y0 - y1)
                 return Math.sqrt(dx * dx + dy * dy)
             }
+        },
+        filters: {
+            roundTo2DecPlaces: function (num) {
+                return Math.floor(num * 100) / 100
+            }
         }
     })
 })
