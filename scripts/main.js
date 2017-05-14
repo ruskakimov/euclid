@@ -275,6 +275,11 @@ document.addEventListener('DOMContentLoaded', function () {
                     return obj
                 })
             },
+            resetZoom: function () {
+                this.zoom = 1
+                this.drawHistory()
+                // translate history so the center of the screen does not move
+            },
 
             // helping functions
             moveLine: function (line, offX, offY) {

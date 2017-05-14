@@ -24,6 +24,13 @@
                     @click="changeMode('hand')"
                 >H</div>
             </div>
+            <div class="zoom">
+                <button
+                    class="zoom_reset"
+                    @click="resetZoom"
+                >Original scale</button>
+                <div class="zoom__val">{{zoom}}</div>
+            </div>
             <canvas id="canvas" :class="mode"></canvas> 
         </div>
     </body>

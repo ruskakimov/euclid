@@ -40,3 +40,9 @@ canvas.hand:active {
 .tools__btn--active {
     background: red;
 }
+
+.zoom {
+    position: fixed;
+    right: 10px;
+    bottom: 10px;
+}
