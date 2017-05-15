@@ -15,4 +15,7 @@
 
 ### TODO:
  - add GUI for undo and redo
+ - add tool icons
+ - fix mouseout tool behavior
  - fast switch between tools with hotkeys
+ - snap to points
