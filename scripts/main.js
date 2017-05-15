@@ -234,9 +234,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 for (var i = 0; i < this.displayHistoryTill; i++) {
                     const obj = this.history[i]
                     if (obj instanceof Line)
-                        this.drawScaledLine(obj.x0, obj.y0, obj.x1, obj.y1, this.zoom)
+                        this.drawScaledLine(obj.x0, obj.y0, obj.x1, obj.y1)
                     else if (obj instanceof Circle)
-                        this.drawScaledCircle(obj.x0, obj.y0, obj.radius, this.zoom)
+                        this.drawScaledCircle(obj.x0, obj.y0, obj.radius)
                 }
             },
             drawHistoryWithOffset: function () {
