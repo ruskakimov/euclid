@@ -8,6 +8,7 @@
 - draw line
 - draw circle
 - hand tool (move canvas around)
+- hold `Cmd` or `Windows key` to temprorary use hand tool
 - zoom into any point up to 10x with scroll wheel
 - infinite canvas (ok, technically not infinite, works as long as all coordinates are within Number range)
 - undo drawings with `ctrl`+`z`

@@ -29,6 +29,7 @@ document.addEventListener('DOMContentLoaded', function () {
         data: {
             startingPoint: [],
             history: [],
+            previousMode: modebank.ruler,
             mode: modebank.ruler,
             mouseButtonsDown: 0,
             displayHistoryTill: 0,
@@ -45,6 +46,7 @@ document.addEventListener('DOMContentLoaded', function () {
             canvas.addEventListener('mouseout', this.handleMouseout)
             canvas.addEventListener('wheel', this.handleWheel)
             document.addEventListener('keydown', this.handleKeydown)
+            document.addEventListener('keyup', this.handleKeyup)
             this.ctx = canvas.getContext('2d')
         },
         methods: {
@@ -72,6 +74,22 @@ document.addEventListener('DOMContentLoaded', function () {
                             this.undo()
                             break
                     }
+                }
+                else {
+                    switch (e.key) {
+                        case 'Meta':
+                            e.preventDefault()
+                            e.stopPropagation()
+                            this.changeMode(modebank.hand)
+                            break
+                    }
+                }
+            },
+            handleKeyup: function (e) {
+                switch (e.key) {
+                    case 'Meta':
+                        this.changeMode(this.previousMode)
+                        break
                 }
             },
             handleMousedown: function (e) {
@@ -212,6 +230,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 this.drawHistory()
             },
             changeMode: function (modeStr) {
+                console.log(this.previousMode, this.mode)
+                this.previousMode = this.mode
                 this.mode = modeStr
             },
             addToHistory: function (obj) {
