@@ -2,14 +2,6 @@ function createModebank(modes) {
     var modebank = {}
     var current = modes[0]
     modes.forEach(mode => modebank[mode] = mode)
-    modebank.current = () => current
-    modebank.changeMode = (newMode) => {
-        if (modebank[newMode]) {
-            current = newMode
-            return true
-        }
-        return false
-    }
     return modebank
 }
 
@@ -37,7 +29,7 @@ document.addEventListener('DOMContentLoaded', function () {
         data: {
             startingPoint: [],
             history: [],
-            mode: modebank.current(),
+            mode: modebank.ruler,
             mouseButtonsDown: 0,
             displayHistoryTill: 0,
             handOffset: [0, 0],
@@ -72,11 +64,11 @@ document.addEventListener('DOMContentLoaded', function () {
             },
             handleKeydown: function (e) {
                 if (e.ctrlKey) {
-                    switch (e.keyCode) {
-                        case 89:
+                    switch (e.key) {
+                        case 'y':
                             this.redo()
                             break
-                        case 90:
+                        case 'z':
                             this.undo()
                             break
                     }
@@ -198,7 +190,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             },
             handleHandMouseup: function (e) {
-                // update lines with offset
                 const offX = this.handOffset[0],
                       offY = this.handOffset[1]
                 this.translateHistory(offX, offY)
@@ -221,7 +212,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 this.drawHistory()
             },
             changeMode: function (modeStr) {
-                modebank.changeMode(modeStr)
                 this.mode = modeStr
             },
             addToHistory: function (obj) {
