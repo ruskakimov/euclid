@@ -65,9 +65,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 this.drawHistory()
             },
             handleKeydown: function (e) {
-                if (e.ctrlKey) {
+                if (e.ctrlKey || e.metaKey) {
                     switch (e.key) {
-                        case 'y':
+                        case 'Z':
                             this.redo()
                             break
                         case 'z':
@@ -76,8 +76,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 }
                 else {
+                    console.log(e)
                     switch (e.key) {
-                        case 'Meta':
+                        case 'Alt':
                             e.preventDefault()
                             e.stopPropagation()
                             this.changeMode(modebank.hand)
@@ -96,7 +97,7 @@ document.addEventListener('DOMContentLoaded', function () {
             },
             handleKeyup: function (e) {
                 switch (e.key) {
-                    case 'Meta':
+                    case 'Alt':
                         this.changeMode(this.previousMode)
                         break
                 }
@@ -239,7 +240,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 this.drawHistory()
             },
             changeMode: function (modeStr) {
-                console.log(this.previousMode, this.mode)
                 this.previousMode = this.mode
                 this.mode = modeStr
             },
