@@ -82,6 +82,15 @@ document.addEventListener('DOMContentLoaded', function () {
                             e.stopPropagation()
                             this.changeMode(modebank.hand)
                             break
+                        case '1':
+                            this.changeMode(modebank.ruler)
+                            break
+                        case '2':
+                            this.changeMode(modebank.compass)
+                            break
+                        case '3':
+                            this.changeMode(modebank.hand)
+                            break
                     }
                 }
             },
