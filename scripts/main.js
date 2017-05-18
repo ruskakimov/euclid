@@ -1,7 +1,9 @@
 function createModebank(modes) {
     var modebank = {}
     var current = modes[0]
-    modes.forEach(mode => modebank[mode] = mode)
+    modes.forEach(function (mode) {
+        return modebank[mode] = mode
+    })
     return modebank
 }
 
@@ -284,7 +286,7 @@ document.addEventListener('DOMContentLoaded', function () {
             },
             translateHistory: function (offX, offY) {
                 // move all history with offset
-                this.history = this.history.map(obj => {
+                this.history = this.history.map(function(obj) {
                     if (obj instanceof Line) {
                         this.moveLine(obj, offX, offY)
                     }
