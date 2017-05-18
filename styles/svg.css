@@ -1,0 +1,6 @@
+svg {
+    cursor: pointer;
+}
+svg:hover #back-circle {
+    fill: crimson !important;
+}

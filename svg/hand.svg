@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg viewBox="0 0 100 100" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5;">
+<g id="Hand-icon">
+    <circle id="back-circle" cx="50" cy="50" r="50" style="fill:#c4c4c4;"/>
+    <path id="hand" d="M30.401,82.832c0,0 -23.57,-26.943 -15.83,-32.832c7.461,-5.676 18.299,8.865 18.299,8.865c0,0 -6.277,-36.622 3.252,-38.6c8.795,-1.825 12.666,32.327 12.666,32.327c0,0 -4.383,-36.261 5.961,-36.41c10.079,-0.144 7.26,36.749 7.3,36.777c0,0 3.932,-31.567 12.035,-29.208c9.498,2.766 0.778,59.081 0.778,59.081c-14.08,0.067 -17.476,0.663 -44.461,0Z" style="fill:none;stroke:#000;stroke-width:7px;"/>
+</g>
+</svg>

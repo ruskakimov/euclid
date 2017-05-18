@@ -28,17 +28,12 @@ canvas.hand:active {
     width: 2em;
     height: 2em;
     margin: .5em;
-    background: gray;
     color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-family: -apple-system, system-ui, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
     cursor: pointer;
 }
 
-.tools__btn--active {
-    background: red;
+.tools__btn--active #back-circle {
+    fill: #f77;
 }
 
 .zoom {

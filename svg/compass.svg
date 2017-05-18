@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg viewBox="0 0 100 100" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5;">
+<g id="Compass-icon">
+    <circle id="back-circle" cx="50" cy="50" r="50" style="fill:#c4c4c4;"/>
+    <g id="compass">
+        <circle id="dot" cx="50" cy="50" r="11.794"/>
+        <circle cx="50" cy="50" r="32.832" style="fill:none;stroke:#000;stroke-width:7px;"/>
+    </g>
+</g>
+</svg>
