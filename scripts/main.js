@@ -132,7 +132,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             },
             handleMouseup: function (e) {
-                console.log('mouse up', this.mode, this.mouseButtonsDown)
                 if (this.mouseButtonsDown === 0) return
                 this.mouseButtonsDown--
                 switch (this.mode) {
@@ -169,7 +168,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             },
             handleRulerMouseup: function () {
-                console.log('save line')
                 const length = this.distanceBetween(
                     this.startingPoint[0],
                     this.startingPoint[1],
@@ -210,7 +208,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             },
             handleCompassMouseup: function () {
-                console.log('save circle')
                 const radius = this.distanceBetween(
                     this.startingPoint[0],
                     this.startingPoint[1],
@@ -260,9 +257,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 this.drawHistory()
             },
             changeMode: function (modeStr) {
-                console.log('dispatch')
                 this.ctx.canvas.dispatchEvent(new Event('mouseup'))
-                console.log('change mode')
                 this.previousMode = this.mode
                 this.mode = modeStr
             },
