@@ -85,11 +85,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
                 else {
                     switch (e.key) {
-                        case 'Alt':
-                            e.preventDefault()
-                            e.stopPropagation()
-                            this.changeMode(modebank.hand)
-                            break
                         case '1':
                             this.changeMode(modebank.ruler)
                             break
@@ -104,9 +99,6 @@ document.addEventListener('DOMContentLoaded', function () {
             },
             handleKeyup: function (e) {
                 switch (e.key) {
-                    case 'Alt':
-                        this.changeMode(this.previousMode)
-                        break
                 }
             },
             handleMousedown: function (e) {
