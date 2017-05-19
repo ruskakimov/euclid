@@ -50,6 +50,11 @@ document.addEventListener('DOMContentLoaded', function () {
             canvas.addEventListener('wheel', this.handleWheel)
             document.addEventListener('keydown', this.handleKeydown)
             document.addEventListener('keyup', this.handleKeyup)
+            window.addEventListener('resize', e => {
+                canvas.width = window.innerWidth
+                canvas.height = window.innerHeight
+                this.drawHistory()
+            })
             this.ctx = canvas.getContext('2d')
         },
         methods: {
