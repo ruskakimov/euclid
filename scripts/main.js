@@ -150,6 +150,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // ruler event handlers
             handleRulerMousedown: function (e) {
                 this.startingPoint = [e.offsetX, e.offsetY]
+                this.endingPoint = this.startingPoint.slice()
             },
             handleRulerMousemove: function (e) {
                 if (this.mouseButtonsDown) {
