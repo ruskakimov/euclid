@@ -170,12 +170,20 @@ document.addEventListener('DOMContentLoaded', function () {
             },
             handleRulerMouseup: function () {
                 console.log('save line')
-                this.addToHistory(new Line(
-                    this.startingPoint[0] / this.zoom,
-                    this.startingPoint[1] / this.zoom,
-                    this.endingPoint[0] / this.zoom,
-                    this.endingPoint[1] / this.zoom
-                ))
+                const length = this.distanceBetween(
+                    this.startingPoint[0],
+                    this.startingPoint[1],
+                    this.endingPoint[0],
+                    this.endingPoint[1]
+                )
+                if (length > 0) {
+                    this.addToHistory(new Line(
+                        this.startingPoint[0] / this.zoom,
+                        this.startingPoint[1] / this.zoom,
+                        this.endingPoint[0] / this.zoom,
+                        this.endingPoint[1] / this.zoom
+                    ))
+                }
             },
 
             // compass event handlers
