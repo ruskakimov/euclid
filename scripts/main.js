@@ -201,11 +201,13 @@ document.addEventListener('DOMContentLoaded', function () {
                     e.offsetX,
                     e.offsetY
                 )
-                this.addToHistory(new Circle(
-                    this.startingPoint[0] / this.zoom,
-                    this.startingPoint[1] / this.zoom,
-                    radius / this.zoom
-                ))
+                if (radius > 0) {
+                    this.addToHistory(new Circle(
+                        this.startingPoint[0] / this.zoom,
+                        this.startingPoint[1] / this.zoom,
+                        radius / this.zoom
+                    ))
+                }
             },
 
             // hand event handlers
