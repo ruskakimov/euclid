@@ -181,6 +181,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // compass event handlers
             handleCompassMousedown: function (e) {
                 this.startingPoint = [e.offsetX, e.offsetY]
+                this.endingPoint = this.startingPoint.slice()
             },
             handleCompassMousemove: function (e) {
                 if (this.mouseButtonsDown) {
