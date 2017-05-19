@@ -30,6 +30,7 @@ document.addEventListener('DOMContentLoaded', function () {
         el: '#app',
         data: {
             startingPoint: [],
+            endingPoint: [],
             history: [],
             previousMode: modebank.ruler,
             mode: modebank.ruler,
@@ -78,7 +79,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 }
                 else {
-                    console.log(e)
                     switch (e.key) {
                         case 'Alt':
                             e.preventDefault()
@@ -132,17 +132,18 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             },
             handleMouseup: function (e) {
+                console.log('mouse up', this.mode, this.mouseButtonsDown)
                 if (this.mouseButtonsDown === 0) return
                 this.mouseButtonsDown--
                 switch (this.mode) {
                     case modebank.ruler:
-                        this.handleRulerMouseup(e)
+                        this.handleRulerMouseup()
                         break
                     case modebank.compass:
-                        this.handleCompassMouseup(e)
+                        this.handleCompassMouseup()
                         break
                     case modebank.hand:
-                        this.handleHandMouseup(e)
+                        this.handleHandMouseup()
                         break
                 }
             },
@@ -157,20 +158,23 @@ document.addEventListener('DOMContentLoaded', function () {
             handleRulerMousemove: function (e) {
                 if (this.mouseButtonsDown) {
                     this.drawHistory()
+                    this.endingPoint[0] = e.offsetX
+                    this.endingPoint[1] = e.offsetY
                     this.drawLine(
                         this.startingPoint[0],
                         this.startingPoint[1],
-                        e.offsetX,
-                        e.offsetY
+                        this.endingPoint[0],
+                        this.endingPoint[1]
                     )
                 }
             },
-            handleRulerMouseup: function (e) {
+            handleRulerMouseup: function () {
+                console.log('save line')
                 this.addToHistory(new Line(
                     this.startingPoint[0] / this.zoom,
                     this.startingPoint[1] / this.zoom,
-                    e.offsetX / this.zoom,
-                    e.offsetY / this.zoom
+                    this.endingPoint[0] / this.zoom,
+                    this.endingPoint[1] / this.zoom
                 ))
             },
 
@@ -181,11 +185,13 @@ document.addEventListener('DOMContentLoaded', function () {
             handleCompassMousemove: function (e) {
                 if (this.mouseButtonsDown) {
                     this.drawHistory()
+                    this.endingPoint[0] = e.offsetX
+                    this.endingPoint[1] = e.offsetY
                     const radius = this.distanceBetween(
                         this.startingPoint[0],
                         this.startingPoint[1],
-                        e.offsetX,
-                        e.offsetY
+                        this.endingPoint[0],
+                        this.endingPoint[1]
                     )
                     this.drawCircle(
                         this.startingPoint[0],
@@ -194,12 +200,13 @@ document.addEventListener('DOMContentLoaded', function () {
                     )
                 }
             },
-            handleCompassMouseup: function (e) {
+            handleCompassMouseup: function () {
+                console.log('save circle')
                 const radius = this.distanceBetween(
                     this.startingPoint[0],
                     this.startingPoint[1],
-                    e.offsetX,
-                    e.offsetY
+                    this.endingPoint[0],
+                    this.endingPoint[1]
                 )
                 if (radius > 0) {
                     this.addToHistory(new Circle(
@@ -221,7 +228,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     this.drawHistoryWithOffset()
                 }
             },
-            handleHandMouseup: function (e) {
+            handleHandMouseup: function () {
                 const offX = this.handOffset[0],
                       offY = this.handOffset[1]
                 this.translateHistory(offX, offY)
@@ -244,6 +251,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 this.drawHistory()
             },
             changeMode: function (modeStr) {
+                console.log('dispatch')
+                this.ctx.canvas.dispatchEvent(new Event('mouseup'))
+                console.log('change mode')
                 this.previousMode = this.mode
                 this.mode = modeStr
             },
@@ -288,7 +298,7 @@ document.addEventListener('DOMContentLoaded', function () {
             },
             translateHistory: function (offX, offY) {
                 // move all history with offset
-                this.history = this.history.map(function(obj) {
+                this.history = this.history.map(obj => {
                     if (obj instanceof Line) {
                         this.moveLine(obj, offX, offY)
                     }
